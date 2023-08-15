@@ -1,0 +1,10 @@
+PyPDF2
+chromadb
+spacy
+openai
+loguru
+sentence_transformers
+spacy
+tiktoken
+transformers
+nltk

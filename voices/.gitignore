@@ -1,0 +1,12 @@
+output/**/*.mp3
+output/**/*.wav
+output/**/*.m4a
+output/**/*.mpeg
+output/**/*.mkv
+input/**/*.mp3
+input/**/*.wav
+input/**/*.m4a
+input/**/*.mpeg
+input/**/*.mkv
+
+.env

@@ -1,0 +1,11 @@
+[
+    {
+        "name": "Clyde",
+        "voice_id": "2EiwWnXFnvU5JabPnv8n",
+        "age": "middle aged",
+        "gender": "male",
+        "accent": "american",
+        "description": "confident low mid voice, good for npcs that will stay around for a while or that players will interact with often.",
+        "use_case": "npc voice"
+    }
+]
