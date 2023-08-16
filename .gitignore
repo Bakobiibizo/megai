@@ -4,3 +4,4 @@ venv
 docs/*
 fake_endpoint
 tests
+.vscode

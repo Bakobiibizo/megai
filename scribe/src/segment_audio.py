@@ -1,10 +1,9 @@
 import os
-import requests
 import openai
 
 # Function to split the file into 25MB sections
 def split_file(file_path):
-    chunk_size = 25 * 1024 * 1024  # 25MB
+    chunk_size = 25 * 512 * 512
     file_name = os.path.basename(file_path)
     file_size = os.path.getsize(file_path)
 
@@ -21,10 +20,10 @@ def split_file(file_path):
             part_num += 1
 
 def send_chunk(data, file_name, filesize, part_num):
-    audio_file= open("docs/in/output.wav", "rb")
+    audio_file= open("audio/in/output.wav", "rb")
     transcript = openai.Audio.transcribe("whisper-1", audio_file)
 
-# Main function to process the file
+
 def process_file(file_path):
     if not os.path.isfile(file_path):
         print("File not found")
@@ -33,5 +32,5 @@ def process_file(file_path):
     split_file(file_path)
 
 if __name__ == '__main__':
-    file_path = 'docs/in/output.wav'  # Replace with the path to your .wav file
+    file_path = 'docs/in/output.wav'  
     process_file(file_path)

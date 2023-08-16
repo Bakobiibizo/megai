@@ -1,0 +1,12 @@
+.env
+src/moves
+src/in/**/*
+src/out/**/*
+.venv
+venv
+__pycache__
+*.txt
+*.mp3
+*.mp4
+*.wav
+*.mkv
