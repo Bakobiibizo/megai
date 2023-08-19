@@ -29,12 +29,12 @@ class GenerateImage:
         return image_primer
 
     def count_down(self, filename):
-        for _ in range(60):
+        for _ in range(10, 0, -1):
             if os.path.isfile(filename):
                 break
             asyncio.run(asyncio.sleep(1))
         else:
-            print('Failed to find image file after maximum number of retries')
+            print("Failed to find image file after maximum number of retries")
             return None
 
     image_count = 0  # Class variable to keep track of the number of images generated
@@ -47,42 +47,41 @@ class GenerateImage:
         with open("image/theme.json", "r") as theme:
             self.theme = json.load(theme)
         print(self.theme)
-        self.theme["87"]["inputs"]["text_positive"] = f"{self.prompt}, {self.image_primer}"
-
+        self.theme["87"]["inputs"][
+            "text_positive"
+        ] = f"{self.prompt}, {self.image_primer}"
+        req = request.Request("http://127.0.0.1:8188/prompt", data=data)
+        image_data = json.loads(request.urlopen(req).read())
         p = {"prompt": self.prompt}
-        data = json.dumps(p).encode('utf-8')
-
+        data = json.dumps(p).encode("utf-8")
         try:
-            req = request.Request("http://127.0.0.1:8188/prompt", data=data)
-            image_data = json.loads(request.urlopen(req).read())
-            self.count_down(filename=filename)
-            if 'error' in image_data or 'false' in image_data['success']:
-                raise Exception('Error or false success in image generation')
+            filename = f"D:/stable-diffusion-webui/ComfyUI/output/ComfyUI_{str(self.image_count).zfill(5)}_.png"
+            self.count_down(filename)
+            if "error" in image_data or "false" in image_data["success"]:
+                raise Exception("Error or false success in image generation")
 
         except Exception as e:
-            print(f'Error in image generation: {e}. Retrying...')
+            print(f"Error in image generation: {e}. Retrying...")
 
         self.image_count += 1
         image_number = self.image_count
         image_id = image_data["prompt_id"]
         with open("image/image_ids.json", "r") as f:
             image_ids = json.load(f)
-            if image_id not in [item['image_id'] for item in image_ids]:
-                image_ids.append({'image_id': image_id, 'image_number': image_number})
+            if image_id not in [item["image_id"] for item in image_ids]:
+                image_ids.append({"image_id": image_id, "image_number": image_number})
                 with open("image/image_ids.json", "w") as file:
                     json.dump(image_ids, file)
 
         filename = f"D:/stable-diffusion-webui/ComfyUI/output/ComfyUI_{str(image_number).zfill(5)}_.png"
         print(filename)
 
-
-
         with open(filename, "rb") as f:
             image_data = f.read()
         # Encode the binary data to base64
         encoded_image_data = base64.b64encode(image_data)
         # Convert the base64 bytes to string
-        serialized_image = encoded_image_data.decode('utf-8')
+        serialized_image = encoded_image_data.decode("utf-8")
         return serialized_image
 
     def set_style(self, style=None):
@@ -91,3 +90,11 @@ class GenerateImage:
             UHD drawing, pen and ink, t-shirt design, illustration,"""
         self.style = style
         return style
+
+
+if __name__ == "__name__":
+    image.get_theme()
+    image = GenerateImage()
+    image.set_style(style="neo tattoo illustration")
+    image.set_image_primer()
+    image.generate_image(prompt="a duck wearing a fedora")

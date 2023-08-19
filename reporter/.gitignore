@@ -1,0 +1,9 @@
+.env
+creds/*.json
+docs/*.txt
+docs/*.json
+*/__pycache__
+__pycache__
+gnrok.yml
+.venv
+creds/**/*

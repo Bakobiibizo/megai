@@ -1,0 +1,8 @@
+.env
+.pytest_cache
+.venv
+.vscode
+audio/**/*
+chat_log/**/*
+documents/**/*
+image/**/*
