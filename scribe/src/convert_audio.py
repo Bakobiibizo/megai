@@ -1,4 +1,5 @@
 import os
+from typing import List
 from moviepy.editor import AudioFileClip
 import loguru
 
@@ -6,30 +7,47 @@ import loguru
 logger = loguru.logger
 
 
-def process_audio():
-    audio_file_path = None
-    try:
-        in_dir = "./src/in/"
-        in_dir = os.path.abspath(in_dir)
-        movie_suffix = [".mp4", ".mkv"]
-        audio_suffix = [".mp3", ".wav"]
-        for file in os.listdir(in_dir):
-            video_file_path = os.path.join(in_dir, file)
+def convert_audio(
+    file_path: str, audio_file_path: str, supported_suffix: List[str]
+) -> str:
+    logger.info(f"Checking and converting to audio: {file_path}")
+    audio_file_path = ""
 
-            if any(file.endswith(suffix) for suffix in movie_suffix):
-                video = AudioFileClip(video_file_path)
-                audio_file_path = os.path.join(
-                    in_dir, f"{os.path.splitext(file)[0]}.mp3"
-                )
-                video.write_audiofile(audio_file_path)
-            elif any(file.endswith(suffix) for suffix in audio_suffix):
-                audio_file_path = os.path.join(in_dir, file)
+    for suffix in supported_suffix:
+        if file_path.endswith(suffix):
+            file = AudioFileClip(file_path)
+            audio_file_path = file_path.replace(suffix, "mp3")
+            file.write_audiofile(audio_file_path)
+            file.close()
+    if file_path.endswith(".mp3") is False:
+        raise TypeError(f"{file_path} is not a valid file type.")
+    logger.info("Conversion check complete")
+    return audio_file_path
 
-            if audio_file_path:
-                return audio_file_path
-    except FileNotFoundError as error:
-        logger.exception(f"No file found {audio_file_path}{error}.")
+
+def check_audio(audio_path: str) -> str:
+    supported_suffix = [
+        "m4a",
+        "mp3",
+        "webm",
+        "mp4",
+        "mpga",
+        "wav",
+        "mpeg",
+        "ogg",
+        "oga",
+        "flac",
+    ]
+    logger.info("Checking audio files")
+    folder_path = "./src/out/"
+    audio_file_path = convert_audio(
+        file_path=audio_path,
+        audio_file_path=folder_path,
+        supported_suffix=supported_suffix,
+    )
+    logger.info("Check complete")
+    return audio_file_path
 
 
 if __name__ == "__main__":
-    process_audio()
+    check_audio("src/in/input_audio.mp3")

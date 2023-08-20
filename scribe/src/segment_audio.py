@@ -1,52 +1,25 @@
 import os
-import openai
+import loguru
+from pydub import AudioSegment
+
+logger = loguru.logger
 
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
-
-
-# Function to split the file into 25MB sections
-def split_file(file_path_str: str):
-    if not file_path_str:
+def split_file(file_path_str: str, chunk_length_ms: int = 10 * 40 * 512):
+    logger.info(f"Splitting file: {file_path_str}")
+    if not os.path.exists(file_path_str):
         raise FileNotFoundError(f"File {file_path_str} not found.")
-    chunk_size = 25 * 512 * 512
-    file_name = os.path.basename(file_path_str)
-    file_size = os.path.getsize(file_path_str)
 
-    with open(file_path_str, "rb") as file:
-        part_num = 1
-        while True:
-            data = file.read(chunk_size)
-            if not data:
-                break
-            if file_size < chunk_size:
-                data = data[:file_size]
-            if file_size >= chunk_size:
-                data = data[:chunk_size]
-                file_size -= chunk_size
+    audio = AudioSegment.from_mp3(file_path_str)
+    audio_files = []
 
-            output_file = f"./src/out/{file_name}_{part_num}.wav"
-            # Send the chunk to the API
-            send_chunk(data, file_name, part_num)
-
-            part_num += 1
-
-
-def send_chunk(data: bytes, file_name: str, part_num: int):
-    subscript = openai.Audio.transcribe("whisper-1", data)
-    with open(output_file, "a", encoding="utf-8") as file:
-        sub_transcript = file.write(f"{subscript[0]['text']}\n")
-    return sub_transcript
-
-
-def process_file(file_path):
-    if not os.path.isfile(file_path):
-        print("File not found")
-        return
-
-    split_file(file_path)
+    for i, chunk in enumerate(audio[::chunk_length_ms]):
+        chunk_file_name = f"src/audio_temp/chunk_{i + 1}.mp3"
+        chunk.export(chunk_file_name, format="mp3")
+        audio_files.append(chunk_file_name)
+    logger.info("Split complete")
+    return audio_files
 
 
 if __name__ == "__main__":
-    file_path = "docs/in/output.wav"
-    process_file(file_path)
+    split_file("./src/in/input_audio.mp3")

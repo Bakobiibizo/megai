@@ -1,4 +1,19 @@
+import os
+import datetime
+import openai
+from dotenv import load_dotenv
+import loguru
 
+logger = loguru.logger
+
+load_dotenv()
+
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
+
+def extract_info(transcription, audio_file_name):
+    
+    
 
 def meeting_minutes(transcription, audio_file_name):
     """

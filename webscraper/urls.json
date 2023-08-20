@@ -2,37 +2,5 @@
     [
         "gaia.l.a.r",
         []
-    ],
-    {
-        "ok": true,
-        "info": {
-            "format": 1,
-            "key": "AGan9F",
-            "guild": "GATO Project",
-            "autorecorded": false,
-            "guildExtra": {
-                "name": "GATO Project",
-                "id": "1099335575745613835",
-                "icon": "https://cdn.discordapp.com/icons/1099335575745613835/606ad41f2fb166fea7bb1d5db0e1cf17.png?size=256"
-            },
-            "channel": "general-voice",
-            "channelExtra": {
-                "name": "general-voice",
-                "id": "1141112397000613909",
-                "type": 2
-            },
-            "requester": "senecalouck",
-            "requesterExtra": {
-                "username": "senecalouck",
-                "globalName": "Seneca",
-                "discriminator": "0",
-                "avatar": "https://cdn.discordapp.com/avatars/1040712625274769528/8bd249c3d15f276c7d3093bbbc110a3b.png?size=256"
-            },
-            "requesterId": "1040712625274769528",
-            "startTime": "2023-08-18T23:01:35.531Z",
-            "expiresAfter": 168,
-            "features": {}
-        }
-    },
-    {}
+    ]
 ]

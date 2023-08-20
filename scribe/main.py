@@ -1,13 +1,10 @@
-from src.transcribe_audio import transcribe_audio
-from src.convert_audio import process_audio
+from src.process_audio import process_audio
 import loguru
 from fastapi import FastAPI
-from fastapi.responses import JSONResponse
-from fastapi.exceptions import HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from elevenlabs import APIError
 from uvicorn.server import Server
 from uvicorn.config import Config
+import os
 
 
 logger = loguru.logger
@@ -25,21 +22,31 @@ app.add_middleware(
 )
 
 
+def save_audio(file_path: str):
+    with open(file_path, "rb") as file:
+        audio_file = file.read()
+    audio_file_path = "./src/in/input_audio.mp3"
+    with open(audio_file_path, "wb") as file:
+        file.write(audio_file)
+    return audio_file_path
+
+
+def save_transcript(file_path: str, transcript: str):
+    path = f"{os.path.splitext(file_path)[0]}.txt"
+    with open(
+        f"C:/Users/richa/OneDrive/Documents/{path}", "w", encoding="utf-8"
+    ) as file:
+        file.write(transcript)
+    os.remove(file_path)
+
+
 @app.post("/transcription", tags=["voice_generation"])
 def main(data):
-    audio_file = data["audio_file"]
-    audio_path = "./src/in/input_audio.mp3"
-    with open(audio_path, "wb") as file:
-        file.write(audio_file)
-    audio_file = process_audio()
-    try:
-        return transcribe_audio(audio_file_name=audio_file)
-    except HTTPException as erorr:
-        logger.exception(f"API request failed: \n{erorr}\n{audio_file}")
-        return JSONResponse(status_code=500, content={"error": str(erorr)})
-    except APIError as erorr:
-        logger.exception(f"API request failed: \n{erorr}\n{audio_file}")
-        return JSONResponse(status_code=401, content={"error": str(erorr)})
+    logger.info(f"Processing audio: {data.audio_file_path}")
+    file_path = save_audio(data.audio_file_path)
+    transcript = process_audio(file_path=file_path)
+    save_transcript(data.audio_file_path, transcript)
+    return transcript
 
 
 @app.post("/minutes", tags=["minutes"])

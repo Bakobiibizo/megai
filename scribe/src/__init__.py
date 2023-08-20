@@ -1,4 +1,3 @@
-from . import convert_audio
-from src import transcribe_audio
+from src import convert_audio, process_audio, segment_audio, transcribe_audio
 
-__all__ = ["convert_audio", "transcribe_audio"]
+__all__ = ["convert_audio", "process_audio", "segment_audio", "transcribe_audio"]
